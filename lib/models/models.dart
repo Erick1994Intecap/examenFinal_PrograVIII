@@ -7,3 +7,7 @@ export 'package:cartelera/models/credits_response.dart';
 export 'package:cartelera/models/upcoming_response.dart';
 export 'package:cartelera/models/image_response.dart';
 export 'package:cartelera/models/images.dart';
+export 'package:cartelera/models/production_companies.dart';
+export 'package:cartelera/models/full_movie.dart';
+export 'package:cartelera/models/logo.dart';
+export 'package:cartelera/models/company_image_response.dart';

@@ -29,7 +29,14 @@ class DetailsScreen extends StatelessWidget {
               id: args.id,
             ),
             _Overview(overView: args.overview),
-            _CardSwiper(id: args.id)
+            _HeaderCard(
+              title: 'Actores',
+            ),
+            _CastSwiper(id: args.id),
+            _HeaderCard(
+              title: 'Produccion',
+            ),
+            _ProductionSwiper(id: args.id)
           ]))
         ],
       ),
@@ -190,9 +197,9 @@ class _Overview extends StatelessWidget {
   }
 }
 
-class _CardSwiper extends StatelessWidget {
+class _CastSwiper extends StatelessWidget {
   final int id;
-  const _CardSwiper({Key? key, required this.id}) : super(key: key);
+  const _CastSwiper({Key? key, required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +219,7 @@ class _CardSwiper extends StatelessWidget {
             if (snapshot.hasData) {
               return SizedBox(
                   width: double.infinity,
-                  height: size.height * 0.5,
+                  height: size.height * 0.25,
 
                   //color: Colors.red,
 
@@ -271,5 +278,128 @@ class _CardSwiper extends StatelessWidget {
         fit: BoxFit.cover,
       );
     }
+  }
+}
+
+class _ProductionSwiper extends StatelessWidget {
+  final int id;
+  const _ProductionSwiper({Key? key, required this.id}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    late Future<MovieF> np;
+    np = MoviesProvider().getMovieDetails(id);
+
+    final size = MediaQuery.of(context).size;
+    return getCompanies(context, np);
+  }
+
+  Widget getCompanies(BuildContext context, Future<MovieF> np) {
+    final size = MediaQuery.of(context).size;
+    return Center(
+      child: FutureBuilder<MovieF>(
+          future: np,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return SizedBox(
+                  width: double.infinity,
+                  height: size.height * 0.5,
+
+                  //color: Colors.red,
+
+                  child: Expanded(
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: snapshot.data!.productionCompanies.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: EdgeInsets.symmetric(horizontal: 10),
+                              width: 110,
+                              height: 100,
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () => Navigator.pushNamed(
+                                        context, 'companies',
+                                        arguments: Companies(
+                                          logoPath: snapshot
+                                              .data!
+                                              .productionCompanies[index]
+                                              .logoPath,
+                                          id: snapshot.data!
+                                              .productionCompanies[index].id,
+                                          name: snapshot.data!
+                                              .productionCompanies[index].name,
+                                          originCountry: snapshot
+                                              .data!
+                                              .productionCompanies[index]
+                                              .originCountry,
+                                          description: snapshot
+                                              .data!
+                                              .productionCompanies[index]
+                                              .description,
+                                          headquarters: '',
+                                        )),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: _fImage(snapshot
+                                            .data!
+                                            .productionCompanies[index]
+                                            .logoPath)),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    snapshot
+                                        .data!.productionCompanies[index].name,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                  )
+                                ],
+                              ),
+                            );
+                          })));
+            } else if (snapshot.hasError) {
+              return Text('No hay datos');
+            }
+            return CircularProgressIndicator();
+          }),
+    );
+  }
+
+  FadeInImage _fImage(String image) {
+    if (image.isEmpty) {
+      return FadeInImage(
+        placeholder: AssetImage('assets/no_image.jpeg'),
+        image: NetworkImage('https://via.placeholder.com/200x300'),
+        height: 140,
+        width: 100,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return FadeInImage(
+        placeholder: AssetImage('assets/no_image.jpeg'),
+        image: NetworkImage("https://image.tmdb.org/t/p/w200" + image),
+        height: 150,
+        width: 600,
+        fit: BoxFit.contain,
+      );
+    }
+  }
+}
+
+class _HeaderCard extends StatelessWidget {
+  final String title;
+
+  const _HeaderCard({Key? key, required this.title}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Text(title,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)));
   }
 }

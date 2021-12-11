@@ -49,7 +49,8 @@ class _MyHomePageState extends State<MyHomePage> {
         LoginPage.id: (context) => LoginPage(),
         'home': (_) => HomeScreen(),
         'details': (_) => DetailsScreen(),
-        'similar': (_) => SimilarMovieScreen()
+        'similar': (_) => SimilarMovieScreen(),
+        'companies': (_) => CompaniesScreen()
       },
       theme: ThemeData.dark()
           .copyWith(appBarTheme: AppBarTheme(color: Colors.blue)),

@@ -8,6 +8,12 @@ class HomeSwippedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+/*
+para pruebas-----eliminar despues
+*/
+
+    MoviesProvider().getNowMovies();
+
     late Future<TopRatedResponse> np;
     np = MoviesProvider().getOnTopMovies();
 

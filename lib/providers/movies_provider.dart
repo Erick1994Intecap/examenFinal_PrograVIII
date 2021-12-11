@@ -15,18 +15,6 @@ class MoviesProvider extends ChangeNotifier {
   final String _language = "es-ES";
   final String _sessionId = "5a520b4e940c45767f77d1778b96471b";
 
-  void getNowMovies() async {
-    //Llamado al API
-    final url = Uri.https(_baseUrl, '3/movie/580489', //'3/movie/now_playing',
-        {'api_key': _apiKey, 'language': _language, 'page': '1'});
-    final response = await http.get(url);
-    print(response.body);
-    final movie = Movie.fromJson(response.body);
-    print(movie.backdropPath);
-    //print(nowPlayingResponse.results[0].title);
-    //notifyListeners();
-  }
-
   //Future obtener async
   Future<NowPlayingResponse> getOnDisplayMovies() async {
     //Llamado al API
@@ -101,22 +89,6 @@ class MoviesProvider extends ChangeNotifier {
     }
   }
 
-  void getData() async {
-    //Llamado al API
-    final url =
-        Uri.https(_baseUrl, '3/movie/580489/images', //'3/movie/now_playing',
-            {
-          'api_key': _apiKey,
-        });
-    final response = await http.get(url);
-    //print(response.body);
-    final image = ImagesResponse.fromJson(response.body);
-    print(image.backdrops[0].filePath);
-    print('Aqui estoy');
-    //print(nowPlayingResponse.results[0].title);
-    //notifyListeners();
-  }
-
   Future<ImagesResponse> getImages(int index) async {
     //Llamado al API
     final url =
@@ -147,6 +119,63 @@ class MoviesProvider extends ChangeNotifier {
     } else {
       print(response.statusCode);
       //throw Exception('Fallamos en la mision');
+    }
+  }
+
+  void getNowMovies() async {
+    //Llamado al API
+    final url = Uri.https(_baseUrl, '3/movie/580489', //'3/movie/now_playing',
+        {'api_key': _apiKey, 'language': _language, 'page': '1'});
+    final response = await http.get(url);
+    print(response.body);
+    final movie = MovieF.fromJson(response.body);
+    print(movie.productionCompanies);
+    //print(nowPlayingResponse.results[0].title);
+    //notifyListeners();
+  }
+
+  Future<MovieF> getMovieDetails(int index) async {
+    //Llamado al API
+    final url =
+        Uri.https(_baseUrl, '3/movie/$index', //'3/movie/now_playing', //
+            {'api_key': _apiKey});
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      //ok
+      return MovieF.fromJson(response.body);
+    } else {
+      print(response.statusCode);
+      throw Exception("Fail");
+    }
+  }
+
+  Future<CompanyImageResponse> getLogo(int index) async {
+    //Llamado al API
+    final url = Uri.https(
+        _baseUrl, '3/company/$index/images', //'3/movie/now_playing', //
+        {'api_key': _apiKey});
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      //ok
+      return CompanyImageResponse.fromJson(response.body);
+    } else {
+      print(response.statusCode);
+      throw Exception("Fail");
+    }
+  }
+
+  Future<Companies> getCompany(int index) async {
+    //Llamado al API
+    final url =
+        Uri.https(_baseUrl, '3/company/$index', //'3/movie/now_playing', //
+            {'api_key': _apiKey});
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      //ok
+      return Companies.fromJson(response.body);
+    } else {
+      print(response.statusCode);
+      throw Exception("Fail");
     }
   }
 }
